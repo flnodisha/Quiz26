@@ -10,6 +10,7 @@
             color: white;
             font-family: Arial, sans-serif;
             margin: 0;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -21,8 +22,8 @@
             color: #ffd700;
         }
 
-        .question-container, .options-container {
-            display: none; /* Initially hidden */
+        .question-container {
+            display: none;
             background: rgba(0, 0, 0, 0.7);
             border: 2px solid #ffd700;
             border-radius: 15px;
@@ -34,9 +35,46 @@
         }
 
         .options-container {
-            display: grid;
+            display: none;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .question-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            width: 80%;
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+        }
+
+        .question-button {
+            background: #004e92;
+            border: 2px solid #ffd700;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .question-button:hover {
+            background: #ffd700;
+            color: #000428;
+            transform: translateY(-2px);
         }
 
         .option {
@@ -50,38 +88,19 @@
             transition: all 0.3s;
         }
 
+        .option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
+        }
+
         .option.correct {
-            background: green;
-            color: white;
+            background: linear-gradient(45deg, #1b5e20, #4caf50);
+            border-color: #81c784;
         }
 
         .option.wrong {
-            background: red;
-            color: white;
-        }
-
-        .question-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 20px;
-        }
-
-        .question-button {
-            background: #004e92;
-            border: 2px solid #ffd700;
-            color: white;
-            margin: 5px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
-
-        .question-button:hover {
-            background: #ffd700;
-            color: #000428;
+            background: linear-gradient(45deg, #b71c1c, #e53935);
+            border-color: #ef5350;
         }
     </style>
 </head>
@@ -90,12 +109,17 @@
         <h1>🏆 Republic Day Celebration Quiz, Junior 🏆</h1>
     </div>
 
-    <div class="question-buttons" id="question-buttons">
-        <!-- Buttons for each question will be dynamically added here -->
-    </div>
+    <div class="question-buttons" id="question-buttons"></div>
 
     <div class="question-container" id="question-container">
         <h2 id="question-text"></h2>
+    </div>
+
+    <div class="options-container" id="options-container">
+        <button class="option" onclick="checkAnswer(0)"></button>
+        <button class="option" onclick="checkAnswer(1)"></button>
+        <button class="option" onclick="checkAnswer(2)"></button>
+        <button class="option" onclick="checkAnswer(3)"></button>
     </div>
 
     <audio id="background-audio" src="background.mp3" loop></audio>
@@ -125,7 +149,7 @@
                 correct: 2
             },
             {
-                question: "Asia’s largest mud dam is located in which district of Odisha?",
+                question: "Asia's largest mud dam is located in which district of Odisha?",
                 options: ["Koraput", "Nabarangpur", "Sambalpur", "Cuttack"],
                 correct: 2
             },
@@ -157,19 +181,18 @@
         function loadQuestion(index) {
             currentQuestion = index;
             const questionData = questions[index];
+            
             document.getElementById('question-text').textContent = questionData.question;
             const options = document.querySelectorAll('.option');
             options.forEach((option, idx) => {
                 option.textContent = `${String.fromCharCode(65 + idx)}: ${questionData.options[idx]}`;
-                option.className = 'option'; // Reset styles
+                option.className = 'option';
             });
 
-            // Hide question buttons and show question and options
             document.getElementById('question-buttons').style.display = 'none';
             document.getElementById('question-container').style.display = 'block';
             document.getElementById('options-container').style.display = 'grid';
 
-            // Play background audio
             const backgroundAudio = document.getElementById('background-audio');
             backgroundAudio.play();
         }
@@ -188,6 +211,16 @@
                 wrongSound.play();
                 options[questionData.correct].classList.add('correct');
             }
+
+            setTimeout(() => {
+                document.getElementById('question-container').style.display = 'none';
+                document.getElementById('options-container').style.display = 'none';
+                document.getElementById('question-buttons').style.display = 'grid';
+                
+                options.forEach(option => {
+                    option.className = 'option';
+                });
+            }, 2000);
         }
 
         createButtons();
