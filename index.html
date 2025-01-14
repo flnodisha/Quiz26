@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Republic Day Quiz</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #000428, #004e92);
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin: 20px;
+            color: #ffd700;
+        }
+
+        .question-container, .options-container {
+            display: none; /* Initially hidden */
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .option {
+            background: linear-gradient(45deg, #000428, #004e92);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .option.correct {
+            background: green;
+            color: white;
+        }
+
+        .option.wrong {
+            background: red;
+            color: white;
+        }
+
+        .question-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .question-button {
+            background: #004e92;
+            border: 2px solid #ffd700;
+            color: white;
+            margin: 5px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .question-button:hover {
+            background: #ffd700;
+            color: #000428;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏆 Republic Day Celebration Quiz, Junior 🏆</h1>
+    </div>
+
+    <div class="question-buttons" id="question-buttons">
+        <!-- Buttons for each question will be dynamically added here -->
+    </div>
+
+    <div class="question-container" id="question-container">
+        <h2 id="question-text"></h2>
+    </div>
+
+    <div class="options-container" id="options-container">
+        <button class="option" onclick="checkAnswer(0)">A: Option 1</button>
+        <button class="option" onclick="checkAnswer(1)">B: Option 2</button>
+        <button class="option" onclick="checkAnswer(2)">C: Option 3</button>
+        <button class="option" onclick="checkAnswer(3)">D: Option 4</button>
+    </div>
+
+    <audio id="background-audio" src="background.mp3" loop></audio>
+    <audio id="correct-sound" src="correct.mp3"></audio>
+    <audio id="wrong-sound" src="wrong.mp3"></audio>
+
+    <script>
+        const questions = [
+            {
+                question: "Which is the largest state by population?",
+                options: ["Odisha", "Uttar Pradesh", "Delhi", "Andhra Pradesh"],
+                correct: 1
+            },
+            {
+                question: "15th January is celebrated as which day?",
+                options: ["Navy Day", "Constitutional Day", "NRI Day", "Army Day"],
+                correct: 3
+            },
+            {
+                question: "Which day is celebrated as Panchayatraj Diwas?",
+                options: ["5th March", "15th January", "26th January", "15th August"],
+                correct: 0
+            },
+            {
+                question: "Who is the working Speaker of Odisha Legislative Assembly?",
+                options: ["Prafulla Mallik", "Niranjan Pujari", "Surama Padhi", "Dr. Surjyanarayan Patra"],
+                correct: 2
+            },
+            {
+                question: "Asia’s largest mud dam is located in which district of Odisha?",
+                options: ["Koraput", "Nabarangpur", "Sambalpur", "Cuttack"],
+                correct: 2
+            },
+            {
+                question: "What is the highest civilian award of India?",
+                options: ["Arjuna", "Padma Bhushan", "Padma Shri", "Bharat Ratna"],
+                correct: 3
+            },
+            {
+                question: "Kerala is famous for which classical dance?",
+                options: ["Odissi", "Kathakali", "Bharatanatyam", "Bihu"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = null;
+
+        function createButtons() {
+            const buttonContainer = document.getElementById('question-buttons');
+            questions.forEach((_, index) => {
+                const button = document.createElement('button');
+                button.className = 'question-button';
+                button.textContent = `Question ${index + 1}`;
+                button.onclick = () => loadQuestion(index);
+                buttonContainer.appendChild(button);
+            });
+        }
+
+        function loadQuestion(index) {
+            currentQuestion = index;
+            const questionData = questions[index];
+            document.getElementById('question-text').textContent = questionData.question;
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, idx) => {
+                option.textContent = `${String.fromCharCode(65 + idx)}: ${questionData.options[idx]}`;
+                option.className = 'option'; // Reset styles
+            });
+
+            // Hide question buttons and show question and options
+            document.getElementById('question-buttons').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            document.getElementById('options-container').style.display = 'grid';
+
+            // Play background audio
+            const backgroundAudio = document.getElementById('background-audio');
+            backgroundAudio.play();
+        }
+
+        function checkAnswer(selected) {
+            const questionData = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            const correctSound = document.getElementById('correct-sound');
+            const wrongSound = document.getElementById('wrong-sound');
+
+            if (selected === questionData.correct) {
+                options[selected].classList.add('correct');
+                correctSound.play();
+            } else {
+                options[selected].classList.add('wrong');
+                wrongSound.play();
+                options[questionData.correct].classList.add('correct');
+            }
+        }
+
+        createButtons();
+    </script>
+</body>
+</html>
