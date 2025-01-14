@@ -102,6 +102,24 @@
             background: linear-gradient(45deg, #b71c1c, #e53935);
             border-color: #ef5350;
         }
+
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #004e92;
+            border: 2px solid #ffd700;
+            color: white;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #ffd700;
+            color: #000428;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -113,6 +131,7 @@
 
     <div class="question-container" id="question-container">
         <h2 id="question-text"></h2>
+        <button class="back-button" onclick="goBack()">Back</button>
     </div>
 
     <div class="options-container" id="options-container">
@@ -211,16 +230,17 @@
                 wrongSound.play();
                 options[questionData.correct].classList.add('correct');
             }
+        }
 
-            setTimeout(() => {
-                document.getElementById('question-container').style.display = 'none';
-                document.getElementById('options-container').style.display = 'none';
-                document.getElementById('question-buttons').style.display = 'grid';
-                
-                options.forEach(option => {
-                    option.className = 'option';
-                });
-            }, 2000);
+        function goBack() {
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('options-container').style.display = 'none';
+            document.getElementById('question-buttons').style.display = 'grid';
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.className = 'option';
+            });
         }
 
         createButtons();
